@@ -98,7 +98,7 @@ if [ -x jre/bin/java ]; then
 else
     JAVA=java
 fi
-screen -mS nxt ${JAVA} -Xmx700m -cp classes:lib/*:conf:addons/classes:addons/lib/* nxt.Nxt
+screen -dmS nxt ${JAVA} -Xmx700m -cp classes:lib/*:conf:addons/classes:addons/lib/* nxt.Nxt
 EOF
 chmod +x /home/$USER/nxt/run.sh
 echo "Done."
