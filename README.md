@@ -27,9 +27,12 @@ Then :
     cd nxt_pi_build
     ./deploy.sh
 
-When install finished:
+When install finish:
 
-   sudo reboot
+    sudo reboot
+
+## How to use server ?##
+
 
 wareck
 donate Bitcoin :  16F8V2EnHCNPVQwTGLifGHCE12XTnWPG8G
