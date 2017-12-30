@@ -31,8 +31,10 @@ When install finish:
 
     sudo reboot
 
-## How to use server ?##
+## How to use server ? ##
+open you internet browser, connect to you raspberry ip address and add 7876 port
 
+    http://raspberryIP:7876
 
 wareck
 donate Bitcoin :  16F8V2EnHCNPVQwTGLifGHCE12XTnWPG8G
