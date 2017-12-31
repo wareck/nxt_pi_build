@@ -58,8 +58,8 @@ sudo apt-get install unzip zip libbz2-dev liblzma-dev libzip-dev zlib1g-dev ntp 
 sudo sed -i -e "s/# set const/set const/g" /etc/nanorc
 fi
 cd /home/$USER/
-
 JAVA_CHK=$(java -version 2>&1 >/dev/null | grep 'java version' | awk '{print $3}'|cut -d'"' -f2)
+if ! [ -x "$(command -v java)" ];then JAVA_CHK=0;fi
 
 if ! [ $JAVA_CHK = '1.8.0_151' ]
 then
