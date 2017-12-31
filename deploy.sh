@@ -3,7 +3,8 @@ Version=0.1a
 Release=12/30/2017
 #NXT Node Server for RPI
 NXT_v=1.11.11
-
+Java_v=1.8.0_151
+JAVA_CHK=0
 daemon_work=0
 
 set -e
@@ -13,7 +14,7 @@ set -e
 ################
 
 #Bootstrap (speedup first start, but requier 2GB free space on sdcard)
-Bootstrap=YES # YES or NO
+Bootstrap=NO # YES or NO
 
 #Optimiser Raspberry (give watchdog function and autostart nxt)
 Raspi_optimize=YES
@@ -28,7 +29,7 @@ echo -e ""
 echo -e "\e[97mSoftware version :\e[0m"
 echo -e "------------------"
 echo -e "NXT                         : $NXT_v"
-
+echo -e "JAVA                        : $Java_v"
 echo -e ""
 if  ps -ef | grep -v grep | grep java >/dev/null
 then
@@ -46,8 +47,6 @@ echo -e -n "Check UNZIP already installed   : "
 if ! [ -x "$(command -v unzip)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
 echo -e -n "Check NTP already installed     : "
 if ! [ -x "$(command -v ntpd)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
-echo -e -n "Check JAVA already installed    : "
-if ! [ -x "$(command -v java)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
 echo -e -n "Check SCREEN already installed  : "
 if ! [ -x "$(command -v screen)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
 echo -e ""
@@ -56,9 +55,41 @@ then
 echo -e "\e[97mRaspberry update :\e[0m"
 sudo apt-get update
 sudo apt-get install unzip zip libbz2-dev liblzma-dev libzip-dev zlib1g-dev ntp htop screen -y
-sudo apt-get install openjdk-8-jre -y
 sudo sed -i -e "s/# set const/set const/g" /etc/nanorc
 fi
+cd /home/$USER/
+
+JAVA_CHK=$(java -version 2>&1 >/dev/null | grep 'java version' | awk '{print $3}'|cut -d'"' -f2)
+
+if ! [ $JAVA_CHK = '1.8.0_151' ]
+then
+echo -e "\e[95mInstall java ARM32 Hard Float ABI :\e[0m"
+echo -e "\e[97mDownload JDK ...\e[0m"
+wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-arm32-vfp-hflt.tar.gz
+echo -e "\e[97mExpand JDK ...\e[0m"
+tar xfz jdk-8u151-linux-arm32-vfp-hflt.tar.gz
+if [ -d /usr/local/java/jdk1.8.0_151/ ]; then sudo rm -r /usr/local/java/jdk1.8.0_151; fi
+echo -e "\e[97mMove JDK ...\e[0m"
+sudo bash -c 'mv jdk1.8.0_151/ /usr/local/java'
+echo -e "\e[97mSetup JDK ...\e[0m"
+sudo update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/bin/java" 1
+sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/java/bin/javac" 1
+sudo update-alternatives --set java /usr/local/java/bin/java
+sudo update-alternatives --set javac /usr/local/java/bin/javac
+if ! grep "JAVA_HOME=/usr/local/java" /etc/profile >/dev/null
+then
+sudo bash -c 'echo "JAVA_HOME=/usr/local/java" >>/etc/profile' 
+sudo bash -c 'echo "JRE_HOME=$JAVA_HOME/jre" >>/etc/profile'
+sudo bash -c 'echo "PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin" >>/etc/profile'
+sudo bash -c 'echo "export JAVA_HOME" >>/etc/profile'
+sudo bash -c 'echo "export JRE_HOME" >>/etc/profile'
+sudo bash -c 'echo "export PATH" >>/etc/profile'
+fi
+java -version
+echo "Done."
+
+fi
+
 }
 
 function Download_Expand_ {
