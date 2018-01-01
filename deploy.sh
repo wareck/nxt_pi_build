@@ -17,9 +17,10 @@ set -e
 
 #Bootstrap (speedup first start, but requier 2GB free space on sdcard)
 Bootstrap=NO # YES or NO
-
 #Optimiser Raspberry (give watchdog function and autostart nxt)
 Raspi_optimize=YES
+#Message of the day
+Motd=YES
 
 echo -e "\n\e[97mNXT Node Server Installer v$Version :\e[0m"
 echo -e "wareck@gmail.com $Release"
@@ -27,12 +28,14 @@ echo -e "\n\e[97mConfiguration\e[0m"
 echo -e "-------------"
 echo -e "Download Bootstrap.dat      : $Bootstrap"
 echo -e "Raspberry Optimisation      : $Raspi_optimize"
+echo -e "Message of the day          : $Motd"
 echo -e ""
 echo -e "\e[97mSoftware version :\e[0m"
 echo -e "------------------"
 echo -e "NXT                         : $NXT_v"
 echo -e "JAVA                        : $Java_v"
 echo -e ""
+sleep 3
 
 if  ps -ef | grep -v grep | grep java >/dev/null
 then
@@ -175,6 +178,24 @@ echo -e "\e[38;5;166mTry again !\e[0m"
 exit
 fi
 fi
+
+if [ $Motd = "YES" ]
+then
+echo -e "\n\e[95mTune message of the day:\e[0m"
+if ! [ -f /etc/motd.bak ];then sudo bash -c 'sudo mv /etc/motd /etc/motd.bak';fi
+if [ -f /tmp/motd ];then rm /tmp/motd;fi
+cat <<'EOF'>> /tmp/motd
+ _____ __ __ _____
+|   | |  |  |_   _|
+| | | |-   -| | |  
+|_|___|__|__| |_|  
+ 
+EOF
+echo "NXT server node v$NXT_v" >>/tmp/motd
+sudo bash -c 'cp /tmp/motd /etc/motd'
+echo "Done."
+fi
+
 
 if [ $Raspi_optimize = "YES" ]
 then
