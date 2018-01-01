@@ -1,10 +1,12 @@
 #!/bin/bash
-Version=0.1a
-Release=12/30/2017
+Version=0.1b
+Release=01/01/2018
 #NXT Node Server for RPI
+
 NXT_v=1.11.11
-Java_v=1.8.0_151
+Java_v=1.8.0_152
 JAVA_CHK=0
+
 daemon_work=0
 
 set -e
@@ -31,10 +33,10 @@ echo -e "------------------"
 echo -e "NXT                         : $NXT_v"
 echo -e "JAVA                        : $Java_v"
 echo -e ""
+
 if  ps -ef | grep -v grep | grep java >/dev/null
 then
 echo -e "\e[38;5;166mNXT daemon is working => shutdown and restart during install...\e[0m"
-~/nxt/stop.sh
 daemon_work=1
 fi
 sleep 1
@@ -57,20 +59,23 @@ sudo apt-get update
 sudo apt-get install unzip zip libbz2-dev liblzma-dev libzip-dev zlib1g-dev ntp htop screen -y
 sudo sed -i -e "s/# set const/set const/g" /etc/nanorc
 fi
+
+echo -e "\e[95mInstall java ARM32 Hard Float ABI :\e[0m"
+
 cd /home/$USER/
 JAVA_CHK=$(java -version 2>&1 >/dev/null | grep 'java version' | awk '{print $3}'|cut -d'"' -f2)
 if ! [ -x "$(command -v java)" ];then JAVA_CHK=0;fi
-
-if ! [ $JAVA_CHK = '1.8.0_151' ]
+if ! [ $JAVA_CHK = '1.8.0_152' ]
 then
-echo -e "\e[95mInstall java ARM32 Hard Float ABI :\e[0m"
 echo -e "\e[97mDownload JDK ...\e[0m"
-wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-arm32-vfp-hflt.tar.gz
+#wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-arm32-vfp-hflt.tar.gz
+wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"  http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jdk-8u152-linux-arm32-vfp-hflt.tar.gz
 echo -e "\e[97mExpand JDK ...\e[0m"
-tar xfz jdk-8u151-linux-arm32-vfp-hflt.tar.gz
-if [ -d /usr/local/java/jdk1.8.0_151/ ]; then sudo rm -r /usr/local/java/jdk1.8.0_151; fi
+tar xfz jdk-8u152-linux-arm32-vfp-hflt.tar.gz
+if [ -d /usr/local/java/jdk1.8.0_152/ ]; then sudo rm -r /usr/local/java/jdk1.8.0_152; fi
+if [ -d /usr/local/java/ ]; then sudo rm -r /usr/local/java ; fi
 echo -e "\e[97mMove JDK ...\e[0m"
-sudo bash -c 'mv jdk1.8.0_151/ /usr/local/java'
+sudo bash -c 'mv jdk1.8.0_152/ /usr/local/java'
 echo -e "\e[97mSetup JDK ...\e[0m"
 sudo update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/bin/java" 1
 sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/java/bin/javac" 1
@@ -78,7 +83,7 @@ sudo update-alternatives --set java /usr/local/java/bin/java
 sudo update-alternatives --set javac /usr/local/java/bin/javac
 if ! grep "JAVA_HOME=/usr/local/java" /etc/profile >/dev/null
 then
-sudo bash -c 'echo "JAVA_HOME=/usr/local/java" >>/etc/profile' 
+sudo bash -c 'echo "JAVA_HOME=/usr/local/java" >>/etc/profile'
 sudo bash -c 'echo "JRE_HOME=$JAVA_HOME/jre" >>/etc/profile'
 sudo bash -c 'echo "PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin" >>/etc/profile'
 sudo bash -c 'echo "export JAVA_HOME" >>/etc/profile'
@@ -86,10 +91,8 @@ sudo bash -c 'echo "export JRE_HOME" >>/etc/profile'
 sudo bash -c 'echo "export PATH" >>/etc/profile'
 fi
 java -version
-echo "Done."
-
 fi
-
+echo "Done."
 }
 
 function Download_Expand_ {
@@ -213,9 +216,16 @@ fi
 echo -e "Done !"
 fi
 
-
-echo -e "\n\e[97mBuild is finished !!!\e[0m"
-echo ""
+echo -e "\n\e[97mInstall is finished !!!\e[0m"
 echo "wareck@gmail.com"
-echo ""
 
+if [ $daemon_work = 1 ]
+then
+echo -e "\e[38;5;166mNXT daemon restart \e[0m"
+~/nxt/stop.sh
+sleep 5
+killall -9 java
+~/nxt/run.sh
+echo "Done."
+fi
+echo ""
