@@ -3,7 +3,7 @@ Version=0.1b
 Release=01/01/2018
 #NXT Node Server for RPI
 
-NXT_v=1.11.11
+NXT_v=1.11.12
 Java_v=1.8.0_152
 JAVA_CHK=0
 
@@ -119,6 +119,15 @@ cat <<'EOF'>> /home/$USER/nxt/conf/nxt.properties
 nxt.myAddress=88.88.88.88
 nxt.apiServerHost=0.0.0.0
 nxt.allowedBotHosts=*
+nxt.shareMyAddress=true
+nxt.myPlatform=Raspberry IOT
+nxt.maxNumberOfInboundConnections=2000
+nxt.maxNumberOfOutboundConnections=50
+nxt.maxNumberOfConnectedPublicPeers=20
+nxt.enablePeerServerDoSFilter=true
+nxt.peerServerDoSFilter.maxRequestsPerSec=30
+nxt.peerServerDoSFilter.delayMs=1000
+nxt.peerServerDoSFilter.maxRequestMs=300000
 EOF
 pbip=$(curl ipinfo.io/ip)
 sed -i -e "s/nxt.myAddress=88.88.88.88/nxt.myAddress=$pbpip/g" /home/$USER/nxt/conf/nxt.properties
