@@ -16,7 +16,7 @@ set -e
 ################
 
 #Bootstrap (speedup first start, but requier 2GB free space on sdcard)
-Bootstrap=NO # YES or NO
+Bootstrap=YES # YES or NO
 #Optimiser Raspberry (give watchdog function and autostart nxt)
 Raspi_optimize=YES
 #Message of the day
@@ -170,15 +170,14 @@ if [ $Bootstrap = "YES" ]
 then
 echo -e "\n\e[95mDownload nxt bootstrap :\e[0m"
 cd /home/$USER
-wget -c http://wareck.free.fr/nxt/nxt_bootstrap.tar.bz2
-wget -c http://wareck.free.fr/nxt/nxt_bootstrap.md5
+wget -c http://farman-aeromodelisme.fr/hors_site/nxt/nxt-bootstrap.zip
+wget -c http://farman-aeromodelisme.fr/hors_site/nxt/nxt-bootstrap.md5
 echo -e -n "nxt_bootstrap.tar.bz2 checksum test : "
-
-if md5sum --status -c nxt_bootstrap.md5
+if md5sum --status -c nxt-bootstrap.md5
 then
 echo -e "[\e[92mOK\e[0m]"
-echo -e "\nUntar nxt_bootstrap.tar.bz2:\n"
-tar xvfj nxt_bootstrap.tar.bz2
+echo -e "\nUnzip nxt_bootstrap.zip:\n"
+unzip nxt-bootstrap.zip
 else
 echo -e "[\e[91mNO\e[0m]"
 echo -e "\e[38;5;166mnxt_bootstrap.tar.bz2 error !\e[0m"
