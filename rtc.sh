@@ -1,6 +1,6 @@
 #!/bin/bash
-Version=0.1b
-Release=12/17/2017
+Version=0.2b
+Release=05/01/2018
 set -e
 echo -e "\n\e[97mRTC addon v$Version :\e[0m"
 echo -e "wareck@gmail.com $Release"
@@ -15,13 +15,16 @@ sudo apt-get install python-smbus python3-smbus python-dev python3-dev -y
 sudo apt-get install i2c-tools -y
 if ! grep "dtparam=i2c1=on" /boot/config.txt ;then sudo bash -c 'echo "dtparam=i2c1=on" >>/boot/config.txt';fi
 if ! grep "i2c-dev" /etc/modules ; then sudo bash -c 'echo "i2c-dev" >>/etc/modules';fi
+if ! grep "i2c-bcm2708" /etc/modules ; then sudo bash -c 'echo "i2c-bcm2708" >>/etc/modules';fi
 if ! grep "rtc-ds1307" /etc/modules ; then sudo bash -c 'echo "rtc-ds1307" >>/etc/modules';fi
+
 echo -e "\n\e[31mFirst step of RTC install was done.\e[0m"
 echo -e "\e[31mYou need to reboot and start rtc.sh again!\n\e[0m"
 touch .rtc && exit 0
 fi
 
 function install_step2 {
+sudo modprobe i2c-dev
 echo -e "\n\e[95mCreate device:\e[0m"
 sudo bash -c 'echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device > /dev/null 2>&1' || true
 echo "Done."
