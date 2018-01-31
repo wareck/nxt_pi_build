@@ -39,7 +39,7 @@ echo -e "\n\e[95mAdding RTC to RPI startup:\e[0m"
 if ! grep "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device" /etc/rc.local >/dev/null 2>&1
 then
 sudo bash -c 'sed -i -e "s/exit 0//g" /etc/rc.local'
-sudo bash -c 'echo "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device" >> /etc/rc.local'
+sudo bash -c 'echo "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device | true " >> /etc/rc.local'
 sudo bash -c 'echo "sudo hwclock -s" >>/etc/rc.local'
 sudo bash -c 'echo "exit 0" >>/etc/rc.local'
 fi
