@@ -4,7 +4,7 @@ Release=01/01/2018
 #NXT Node Server for RPI
 
 NXT_v=1.11.12
-Java_v=1.8.0_152
+Java_v=1.8.0_161
 JAVA_CHK=0
 
 daemon_work=0
@@ -47,19 +47,19 @@ sleep 1
 function prereq_ {
 update_me=0
 echo -e -n "Check ZIP already installed     : "
-if ! [ -x "$(command -v zip)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
+if ! [ -x "$(command -v zip)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e -n "Check UNZIP already installed   : "
-if ! [ -x "$(command -v unzip)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
+if ! [ -x "$(command -v unzip)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e -n "Check NTP already installed     : "
-if ! [ -x "$(command -v ntpd)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
+if ! [ -x "$(command -v ntpd)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e -n "Check SCREEN already installed  : "
-if ! [ -x "$(command -v screen)" ];then echo -e "[\e[91mNO\e[0m]" && update_me=1;else echo -e "[\e[92mOK\e[0m]";fi
+if ! [ -x "$(command -v screen)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e ""
 if [ $update_me = 1 ]
 then
 echo -e "\e[97mRaspberry update :\e[0m"
 sudo apt-get update
-sudo apt-get install unzip zip libbz2-dev liblzma-dev libzip-dev zlib1g-dev ntp htop screen -y
+sudo apt install unzip zip libbz2-dev liblzma-dev libzip-dev zlib1g-dev ntp htop screen -y
 sudo sed -i -e "s/# set const/set const/g" /etc/nanorc
 fi
 
@@ -67,18 +67,23 @@ echo -e "\e[95mInstall java ARM32 Hard Float ABI :\e[0m"
 
 cd /home/$USER/
 JAVA_CHK=$(java -version 2>&1 >/dev/null | grep 'java version' | awk '{print $3}'|cut -d'"' -f2)
-if ! [ -x "$(command -v java)" ];then JAVA_CHK=0;fi
-if ! [ $JAVA_CHK = '1.8.0_152' ]
+if ! [ -x "$(command -v java)" ]; then JAVA_CHK=0 ;fi
+if ! [ $JAVA_CHK = $Java_v ]
 then
 echo -e "\e[97mDownload JDK ...\e[0m"
+
 #wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-arm32-vfp-hflt.tar.gz
-wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"  http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jdk-8u152-linux-arm32-vfp-hflt.tar.gz
+#wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"  http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jdk-8u152-linux-arm32-vfp-hflt.tar.gz
+wget -c -q --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-arm32-vfp-hflt.tar.gz
+
 echo -e "\e[97mExpand JDK ...\e[0m"
-tar xfz jdk-8u152-linux-arm32-vfp-hflt.tar.gz
-if [ -d /usr/local/java/jdk1.8.0_152/ ]; then sudo rm -r /usr/local/java/jdk1.8.0_152; fi
+tar xvfz jdk-8u161-linux-arm32-vfp-hflt.tar.gz
+if [ -d /usr/local/java/jdk1.8.0_161/ ]; then sudo rm -r /usr/local/java/jdk1.8.0_161; fi
 if [ -d /usr/local/java/ ]; then sudo rm -r /usr/local/java ; fi
+
 echo -e "\e[97mMove JDK ...\e[0m"
-sudo bash -c 'mv jdk1.8.0_152/ /usr/local/java'
+sudo bash -c 'mv jdk1.8.0_161/ /usr/local/java'
+
 echo -e "\e[97mSetup JDK ...\e[0m"
 sudo update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/bin/java" 1
 sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/java/bin/javac" 1
