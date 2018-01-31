@@ -36,7 +36,7 @@ sudo bash -c 'hwclock -w'
 echo "Done."
 
 echo -e "\n\e[95mAdding RTC to RPI startup:\e[0m"
-if ! grep "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device" /etc/rc.local >/dev/null 2>&1
+if ! grep "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device | true" /etc/rc.local >/dev/null 2>&1
 then
 sudo bash -c 'sed -i -e "s/exit 0//g" /etc/rc.local'
 sudo bash -c 'echo "echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device | true " >> /etc/rc.local'
@@ -58,6 +58,7 @@ echo -e "\e[95mRTC check :\e[0m"
 sudo i2cdetect -y 1
 echo -e "\e[31mYou must see \"UU\" on address 68.\e[0m"
 echo -e "\e[31mIf not, double check your wiring and try again.\e[0m"
+echo -e "\e[31mIf still not, choose \"Quit\" and follow instructions.\e[0m"
 PS3='Please enter your choice: '
 options=("Check again" "Continue" "Quit")
 select opt in "${options[@]}"
@@ -71,7 +72,15 @@ do
             break
 	    ;;
         "Quit")
-            exit 0 && break
+            echo -e "\n\e[93mIf you don't have \"UU\" on address 68\e[0m"
+	    echo -e "\e[93mtype :\e[0m"
+            echo -e "\e[93msudo su\e[0m"
+	    echo -e "\e[93mecho ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device\e[0m"
+	    echo -e "\e[93mexit\e[0m"
+	    echo -e ""
+	    echo -e "\e[93mthen \e[0m"
+	    echo -e "\e[93m./rtc.sh\n\e[0m"
+	    exit 0 && break
             ;;
         *) echo invalid option;;
     esac
