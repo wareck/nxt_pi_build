@@ -46,12 +46,10 @@ sleep 1
 
 function prereq_ {
 update_me=0
-echo -e -n "Check ZIP already installed     : "
-if ! [ -x "$(command -v zip)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
-echo -e -n "Check UNZIP already installed   : "
-if ! [ -x "$(command -v unzip)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e -n "Check NTP already installed     : "
 if ! [ -x "$(command -v ntpd)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
+echo -e -n "Check ZIP already installed     : "
+if ! [ -x "$(command -v zip)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e -n "Check SCREEN already installed  : "
 if ! [ -x "$(command -v screen)" ];then echo -e "[\e[91m NO \e[0m]" && update_me=1;else echo -e "[\e[92m OK \e[0m]";fi
 echo -e ""
